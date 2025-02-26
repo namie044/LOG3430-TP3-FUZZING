@@ -21,9 +21,13 @@ class MutationFuzzer:
         return self.mutate(seed)
 
 
-random.seed(123)
+# Définition du matricule
+matricule = 2029689
+random.seed(matricule)  # Utilisation du matricule comme seed
 seed = "https://www.polymtl.ca"
 mutation_fuzzer = MutationFuzzer([seed])
+
+print(f"Seed aléatoire utilisée : {matricule}")  # Affichage de la seed
 
 valid_inputs = set()
 trials = 40
