@@ -3,6 +3,7 @@ import os
 import random
 import url_parser
 import matplotlib.pyplot as plt
+from num2words import num2words
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../Partie-A')))
 from random_fuzzer import RandomFuzzer
@@ -57,12 +58,27 @@ def plot(cumulative_coverage):
     plt.show()
 
 # Exemple de couverture avec MutationFuzzer à modifier pour les tâches de la Partie-C
-random.seed(123)
+class MyFuzzer:
+    def __init__(self, trials=500):
+        self.trials = trials
+
+    def fuzz(self):
+        return str(random.randint(-1000000, 1000000))
+
+random.seed(2125787)
 trials = 500
-fuzzer = MutationFuzzer(seeds=["http://www.polymtl.ca"])
 
-input_set = [fuzzer.fuzz() for _ in range(trials)]
+random_fuzzer = RandomFuzzer()
+random_inputs = [random_fuzzer.fuzz() for _ in range(trials)]
+random_coverage = calculate_cumulative_coverage(random_inputs, num2words)
 
-cumulative_coverage = calculate_cumulative_coverage(
-    input_set, url_parser.is_valid_url)
-plot(cumulative_coverage)
+mutation_fuzzer = MutationFuzzer(seeds=["3452020"])
+mutation_inputs = [mutation_fuzzer.fuzz() for _ in range(trials)]
+mutation_coverage = calculate_cumulative_coverage(mutation_inputs, num2words)
+
+my_fuzzer = MyFuzzer()
+my_inputs = [my_fuzzer.fuzz() for _ in range(trials)]
+my_coverage = calculate_cumulative_coverage(my_inputs, num2words)
+
+plot([random_coverage, mutation_coverage, my_coverage])
+
